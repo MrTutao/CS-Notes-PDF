@@ -6,11 +6,8 @@ PDF制作github: https://github.com/sjsdfg/CS-Notes-PDF
 
 # 一、数据类型
 
-## 包装类型
+## 基本类型
 
-八个基本类型：
-
-- boolean/1
 - byte/8
 - char/16
 - short/16
@@ -18,6 +15,14 @@ PDF制作github: https://github.com/sjsdfg/CS-Notes-PDF
 - float/32
 - long/64
 - double/64
+- boolean/\~
+
+boolean 只有两个值：true、false，可以使用 1 bit 来存储，但是具体大小没有明确规定。JVM 会在编译时期将 boolean 类型的数据转换为 int，使用 1 来表示 true，0 表示 false。JVM 并不支持 boolean 数组，而是使用 byte 数组来表示 int 数组来表示。
+
+- [Primitive Data Types](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html)
+- [The Java® Virtual Machine Specification](https://docs.oracle.com/javase/specs/jvms/se8/jvms8.pdf)
+
+## 包装类型
 
 基本类型都有对应的包装类型，基本类型与其对应的包装类型之间的赋值使用自动装箱与拆箱完成。
 
@@ -113,14 +118,30 @@ System.out.println(m == n); // true
 
 String 被声明为 final，因此它不可被继承。
 
-内部使用 char 数组存储数据，该数组被声明为 final，这意味着 value 数组初始化之后就不能再引用其它数组。并且 String 内部没有改变 value 数组的方法，因此可以保证 String 不可变。
+在 Java 8 中，String 内部使用 char 数组存储数据。
 
 ```java
 public final class String
     implements java.io.Serializable, Comparable<String>, CharSequence {
     /** The value is used for character storage. */
     private final char value[];
+}
 ```
+
+在 Java 9 之后，String 类的实现改用 byte 数组存储字符串，同时使用 `coder` 来标识使用了哪种编码。
+
+```java
+public final class String
+    implements java.io.Serializable, Comparable<String>, CharSequence {
+    /** The value is used for character storage. */
+    private final byte[] value;
+
+    /** The identifier of the encoding used to encode the bytes in {@code value}. */
+    private final byte coder;
+}
+```
+
+value 数组被声明为 final，这意味着 value 数组初始化之后就不能再引用其它数组。并且 String 内部没有改变 value 数组的方法，因此可以保证 String 不可变。
 
 ## 不可变的好处
 
@@ -132,7 +153,7 @@ public final class String
 
 如果一个 String 对象已经被创建过了，那么就会从 String Pool 中取得引用。只有 String 是不可变的，才可能使用 String Pool。
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/f76067a5-7d5f-4135-9549-8199c77d8f1c.jpg" /> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/474e5579-38b1-47d2-8f76-a13ae086b039.jpg"/> </div>
 
 **3. 安全性** 
 
@@ -249,10 +270,11 @@ public String(String original) {
 
 Java 的参数是以值传递的形式传入方法中，而不是引用传递。
 
-以下代码中 Dog dog 的 dog 是一个指针，存储的是对象的地址。在将一个参数传入一个方法时，本质上是将对象的地址以值的方式传递到形参中。因此在方法中改变指针引用的对象，那么这两个指针此时指向的是完全不同的对象，一方改变其所指向对象的内容对另一方没有影响。
+以下代码中 Dog dog 的 dog 是一个指针，存储的是对象的地址。在将一个参数传入一个方法时，本质上是将对象的地址以值的方式传递到形参中。因此在方法中使指针引用其它对象，那么这两个指针此时指向的是完全不同的对象，在一方改变其所指向对象的内容时对另一方没有影响。
 
 ```java
 public class Dog {
+
     String name;
 
     Dog(String name) {
@@ -292,7 +314,7 @@ public class PassByValueExample {
 }
 ```
 
-但是如果在方法中改变对象的字段值会改变原对象该字段值，因为改变的是同一个地址指向的内容。
+如果在方法中改变对象的字段值会改变原对象该字段值，因为改变的是同一个地址指向的内容。
 
 ```java
 class PassByValueExample {
@@ -312,7 +334,9 @@ class PassByValueExample {
 
 ## float 与 double
 
-1.1 字面量属于 double 类型，不能直接将 1.1 直接赋值给 float 变量，因为这是向下转型。Java 不能隐式执行向下转型，因为这会使得精度降低。
+Java 不能隐式执行向下转型，因为这会使得精度降低。
+
+1.1 字面量属于 double 类型，不能直接将 1.1 直接赋值给 float 变量，因为这是向下转型。
 
 ```java
 // float f = 1.1;
@@ -397,7 +421,7 @@ protected 用于修饰成员，表示在继承体系中成员对于子类可见�
 
 如果子类的方法重写了父类的方法，那么子类中该方法的访问级别不允许低于父类的访问级别。这是为了确保可以使用父类实例的地方都可以使用子类实例，也就是确保满足里氏替换原则。
 
-字段决不能是公有的，因为这么做的话就失去了对这个字段修改行为的控制，客户端可以对其随意修改。例如下面的例子中，AccessExample 拥有 id 共有字段，如果在某个时刻，我们想要使用 int 去存储 id 字段，那么就需要去修改所有的客户端代码。
+字段决不能是公有的，因为这么做的话就失去了对这个字段修改行为的控制，客户端可以对其随意修改。例如下面的例子中，AccessExample 拥有 id 公有字段，如果在某个时刻，我们想要使用 int 存储 id 字段，那么就需要修改所有的客户端代码。
 
 ```java
 public class AccessExample {
@@ -553,10 +577,11 @@ System.out.println(InterfaceExample.x);
 ## super
 
 - 访问父类的构造函数：可以使用 super() 函数访问父类的构造函数，从而委托父类完成一些初始化的工作。
-- 访问父类的成员：如果子类重写了父类的中某个方法的实现，可以通过使用 super 关键字来引用父类的方法实现。
+- 访问父类的成员：如果子类重写了父类的某个方法，可以通过使用 super 关键字来引用父类的方法实现。
 
 ```java
 public class SuperExample {
+
     protected int x;
     protected int y;
 
@@ -573,6 +598,7 @@ public class SuperExample {
 
 ```java
 public class SuperExtendExample extends SuperExample {
+
     private int z;
 
     public SuperExtendExample(int x, int y, int z) {
@@ -619,12 +645,70 @@ SuperExtendExample.func()
 
 应该注意的是，返回值不同，其它都相同不算是重载。
 
+**3. 实例** 
+
+```java
+class A {
+    public String show(D obj) {
+        return ("A and D");
+    }
+
+    public String show(A obj) {
+        return ("A and A");
+    }
+}
+
+class B extends A {
+    public String show(B obj) {
+        return ("B and B");
+    }
+
+    public String show(A obj) {
+        return ("B and A");
+    }
+}
+
+class C extends B {
+}
+
+class D extends B {
+}
+```
+
+```java
+public class Test {
+
+    public static void main(String[] args) {
+        A a1 = new A();
+        A a2 = new B();
+        B b = new B();
+        C c = new C();
+        D d = new D();
+        System.out.println(a1.show(b)); // A and A
+        System.out.println(a1.show(c)); // A and A
+        System.out.println(a1.show(d)); // A and D
+        System.out.println(a2.show(b)); // B and A
+        System.out.println(a2.show(c)); // B and A
+        System.out.println(a2.show(d)); // A and D
+        System.out.println(b.show(b));  // B and B
+        System.out.println(b.show(c));  // B and B
+        System.out.println(b.show(d));  // A and D
+    }
+}
+```
+
+涉及到重写时，方法调用的优先级为：
+
+- this.show(O)
+- super.show(O)
+- this.show((super)O)
+- super.show((super)O)
+
 # 五、Object 通用方法
 
 ## 概览
 
 ```java
-public final native Class<?> getClass()
 
 public native int hashCode()
 
@@ -633,6 +717,10 @@ public boolean equals(Object obj)
 protected native Object clone() throws CloneNotSupportedException
 
 public String toString()
+
+public final native Class<?> getClass()
+
+protected void finalize() throws Throwable {}
 
 public final native void notify()
 
@@ -643,8 +731,6 @@ public final native void wait(long timeout) throws InterruptedException
 public final void wait(long timeout, int nanos) throws InterruptedException
 
 public final void wait() throws InterruptedException
-
-protected void finalize() throws Throwable {}
 ```
 
 ## equals()
@@ -771,6 +857,7 @@ public int hashCode() {
 
 ```java
 public class ToStringExample {
+
     private int number;
 
     public ToStringExample(int number) {
@@ -814,7 +901,7 @@ public class CloneExample {
     private int b;
 
     @Override
-    protected CloneExample clone() throws CloneNotSupportedException {
+    public CloneExample clone() throws CloneNotSupportedException {
         return (CloneExample)super.clone();
     }
 }
@@ -843,7 +930,7 @@ public class CloneExample implements Cloneable {
     private int b;
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 }
@@ -1017,6 +1104,7 @@ private 方法隐式地被指定为 final，如果在子类中定义的方法和
 
 ```java
 public class A {
+
     private int x;         // 实例变量
     private static int y;  // 静态变量
 
@@ -1045,6 +1133,7 @@ public abstract class A {
 
 ```java
 public class A {
+
     private static int x;
     private int y;
 
@@ -1083,6 +1172,7 @@ public class A {
 
 ```java
 public class OuterClass {
+
     class InnerClass {
     }
 
@@ -1164,19 +1254,21 @@ Class 和 java.lang.reflect 一起对反射提供了支持，java.lang.reflect �
 -  **Method** ：可以使用 invoke() 方法调用与 Method 对象关联的方法；
 -  **Constructor** ：可以用 Constructor 创建新的对象。
 
-**Advantages of Using Reflection:** 
+**反射的优点：** 
 
--  **Extensibility Features**  : An application may make use of external, user-defined classes by creating instances of extensibility objects using their fully-qualified names.
--  **Class Browsers and Visual Development Environments**  :  A class browser needs to be able to enumerate the members of classes. Visual development environments can benefit from making use of type information available in reflection to aid the developer in writing correct code.
--  **Debuggers and Test Tools**  : Debuggers need to be able to examine private members on classes. Test harnesses can make use of reflection to systematically call a discoverable set APIs defined on a class, to insure a high level of code coverage in a test suite.
+*    **可扩展性**  ：应用程序可以利用全限定名创建可扩展对象的实例，来使用来自外部的用户自定义类。
+*    **类浏览器和可视化开发环境**  ：一个类浏览器需要可以枚举类的成员。可视化开发环境（如 IDE）可以从利用反射中可用的类型信息中受益，以帮助程序员编写正确的代码。
+*    **调试器和测试工具**  ： 调试器需要能够检查一个类里的私有成员。测试工具可以利用反射来自动地调用类里定义的可被发现的 API 定义，以确保一组测试中有较高的代码覆盖率。
 
-**Drawbacks of Reflection:** 
+**反射的缺点：** 
 
-Reflection is powerful, but should not be used indiscriminately. If it is possible to perform an operation without using reflection, then it is preferable to avoid using it. The following concerns should be kept in mind when accessing code via reflection.
+尽管反射非常强大，但也不能滥用。如果一个功能可以不用反射完成，那么最好就不用。在我们使用反射技术时，下面几条内容应该牢记于心。
 
--  **Performance Overhead**  : Because reflection involves types that are dynamically resolved, certain Java virtual machine optimizations can not be performed. Consequently, reflective operations have slower performance than their non-reflective counterparts, and should be avoided in sections of code which are called frequently in performance-sensitive applications.
--  **Security Restrictions**  : Reflection requires a runtime permission which may not be present when running under a security manager. This is in an important consideration for code which has to run in a restricted security context, such as in an Applet.
--  **Exposure of Internals**  :Since reflection allows code to perform operations that would be illegal in non-reflective code, such as accessing private fields and methods, the use of reflection can result in unexpected side-effects, which may render code dysfunctional and may destroy portability. Reflective code breaks abstractions and therefore may change behavior with upgrades of the platform.
+*    **性能开销**  ：反射涉及了动态类型的解析，所以 JVM 无法对这些代码进行优化。因此，反射操作的效率要比那些非反射操作低得多。我们应该避免在经常被执行的代码或对性能要求很高的程序中使用反射。
+
+*    **安全限制**  ：使用反射技术要求程序必须在一个没有安全限制的环境中运行。如果一个程序必须在有安全限制的环境中运行，如 Applet，那么这就是个问题了。
+
+*    **内部暴露**  ：由于反射允许代码执行一些在正常情况下不被允许的操作（比如访问私有的属性和方法），所以使用反射可能会导致意料之外的副作用，这可能导致代码功能失调并破坏可移植性。反射代码破坏了抽象性，因此当平台发生改变的时候，代码的行为就有可能也随着变化。
 
 
 - [Trail: The Reflection API](https://docs.oracle.com/javase/tutorial/reflect/index.html)
@@ -1189,7 +1281,7 @@ Throwable 可以用来表示任何可以作为异常抛出的类，分为两种�
 -  **受检异常** ：需要用 try...catch... 语句捕获并进行处理，并且可以从异常中恢复；
 -  **非受检异常** ：是程序运行时错误，例如除 0 会引发 Arithmetic Exception，此时程序崩溃并且无法恢复。
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/PPjwP.png" /> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/PPjwP.png" /> </div>
 
 - [Java 入门之异常处理](https://www.tianmaying.com/tutorial/Java-Exception)
 - [Java 异常的面试问题及答案 -Part 1](http://www.importnew.com/7383.html)

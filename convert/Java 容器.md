@@ -10,7 +10,8 @@ PDF制作github: https://github.com/sjsdfg/CS-Notes-PDF
 
 ## Collection
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/VP4n3i8m34Ntd28NQ4_0KCJ2q044Oez.png"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/6_2001550476096035.png"/> </div>
+
 
 ### 1. Set
 
@@ -36,7 +37,7 @@ PDF制作github: https://github.com/sjsdfg/CS-Notes-PDF
 
 ## Map
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/SoWkIImgAStDuUBAp2j9BKfBJ4vLy4q.png"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/2_2001550426232419.png"/> </div>
 
 - TreeMap：基于红黑树实现。
 
@@ -51,9 +52,9 @@ PDF制作github: https://github.com/sjsdfg/CS-Notes-PDF
 
 ## 迭代器模式
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/SoWkIImgAStDuUBAp2j9BKfBJ4vLy0G.png"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/91aa7c29-438f-4fcc-8c63-2a75899139de.png"/> </div>
 
-Collection 实现了 Iterable 接口，其中的 iterator() 方法能够产生一个 Iterator 对象，通过这个对象就可以迭代遍历 Collection 中的元素。
+Collection 继承了 Iterable 接口，其中的 iterator() 方法能够产生一个 Iterator 对象，通过这个对象就可以迭代遍历 Collection 中的元素。
 
 从 JDK 1.5 之后可以使用 foreach 方法来遍历实现了 Iterable 接口的聚合对象。
 
@@ -85,7 +86,7 @@ List list = Arrays.asList(arr);
 也可以使用以下方式调用 asList()：
 
 ```java
-List list = Arrays.asList(1,2,3);
+List list = Arrays.asList(1, 2, 3);
 ```
 
 # 三、源码分析
@@ -95,6 +96,7 @@ List list = Arrays.asList(1,2,3);
 在 IDEA 中 double shift 调出 Search EveryWhere，查找源码文件，找到之后就可以阅读源码。
 
 ## ArrayList
+
 
 ### 1. 概览
 
@@ -110,6 +112,9 @@ public class ArrayList<E> extends AbstractList<E>
 ```java
 private static final int DEFAULT_CAPACITY = 10;
 ```
+
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/7935be3d-c2b3-4213-90c9-1e68ec4ac4e7.png"/> </div>
+
 
 ### 2. 扩容
 
@@ -372,7 +377,7 @@ transient Node<E> first;
 transient Node<E> last;
 ```
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/49495c95-52e5-4c9a-b27b-92cf235ff5ec.png" /> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/09184175-9bf2-40ff-8a68-3b467c77216a.png"/> </div>
 
 ### 2. 与 ArrayList 的比较
 
@@ -394,7 +399,7 @@ transient Entry[] table;
 
 Entry 存储着键值对。它包含了四个字段，从 next 字段我们可以看出 Entry 是一个链表。即数组中的每个位置被当成一个桶，一个桶存放一个链表。HashMap 使用拉链法来解决冲突，同一个链表中存放哈希值相同的 Entry。
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/8fe838e3-ef77-4f63-bf45-417b6bc5c6bb.png" /> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/1d2719d5-8d60-4c9b-a4ad-b2df7c7615af.jpg"/> </div>
 
 ```java
 static class Entry<K,V> implements Map.Entry<K,V> {
@@ -470,7 +475,7 @@ map.put("K3", "V3");
 - 计算键值对所在的桶；
 - 在链表上顺序查找，时间复杂度显然和链表的长度成正比。
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/49d6de7b-0d0d-425c-9e49-a1559dc23b10.png" /> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/cf779e26-0382-4495-8463-f1e19e2e38a0.jpg"/> </div>
 
 ### 3. put 操作
 
@@ -560,7 +565,7 @@ int hash = hash(key);
 int i = indexFor(hash, table.length);
 ```
 
-（一）计算 hash 值
+**4.1 计算 hash 值** 
 
 ```java
 final int hash(Object k) {
@@ -585,7 +590,7 @@ public final int hashCode() {
 }
 ```
 
-（二）取模
+**4.2 取模** 
 
 令 x = 1<<4，即 x 为 2 的 4 次方，它具有以下性质：
 
@@ -631,8 +636,8 @@ static int indexFor(int h, int length) {
 | 参数 | 含义 |
 | :--: | :-- |
 | capacity | table 的容量大小，默认为 16。需要注意的是 capacity 必须保证为 2 的 n 次方。|
-| size | table 的实际使用量。 |
-| threshold | size 的临界值，size 必须小于 threshold，如果大于等于，就必须进行扩容操作。 |
+| size | 键值对数量。 |
+| threshold | size 的临界值，当 size 大于等于 threshold 就必须进行扩容操作。 |
 | loadFactor | 装载因子，table 能够使用的比例，threshold = capacity * loadFactor。|
 
 ```java
@@ -715,7 +720,7 @@ new capacity : 00100000
 - 它的哈希值如果在第 5 位上为 0，那么取模得到的结果和之前一样；
 - 如果为 1，那么得到的结果为原来的结果 +16。
 
-### 7. 扩容-计算数组容量
+### 7. 计算数组容量
 
 HashMap 构造函数允许用户传入的容量不是 2 的 n 次方，因为它可以自动地将传入的容量转换为 2 的 n 次方。
 
@@ -806,7 +811,7 @@ final Segment<K,V>[] segments;
 static final int DEFAULT_CONCURRENCY_LEVEL = 16;
 ```
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/3fdfc89d-719e-4d93-b518-29fa612b3b18.png"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/deb18bdb-b3b3-4660-b778-b0823a48db12.jpg"/> </div>
 
 ### 2. size 操作
 
@@ -1077,90 +1082,6 @@ public final class ConcurrentCache<K, V> {
 }
 ```
 
-# 附录
-
-Collection 绘图源码：
-
-```
-@startuml
-
-interface Collection
-interface Set
-interface List
-interface Queue
-interface SortSet
-
-class HashSet
-class LinkedHashSet
-class TreeSet
-class ArrayList
-class Vector
-class LinkedList
-class PriorityQueue
-
-
-Collection <|-- Set
-Collection <|-- List
-Collection <|-- Queue
-Set <|-- SortSet
-
-Set <|.. HashSet
-Set <|.. LinkedHashSet
-SortSet <|.. TreeSet
-List <|.. ArrayList
-List <|.. Vector
-List <|.. LinkedList
-Queue <|.. LinkedList
-Queue <|.. PriorityQueue
-
-@enduml
-```
-
-Map 绘图源码
-
-```
-@startuml
-
-interface Map
-interface SortMap
-
-class HashTable
-class LinkedHashMap
-class HashMap
-class TreeMap
-
-Map <|.. HashTable
-Map <|.. LinkedHashMap
-Map <|.. HashMap
-Map <|-- SortMap
-SortMap <|.. TreeMap
-
-@enduml
-```
-
-迭代器类图
-
-```
-@startuml
-
-interface Iterable
-interface Collection
-interface List
-interface Set
-interface Queue
-interface Iterator
-interface ListIterator
-
-Iterable <|-- Collection
-Collection <|.. List
-Collection <|.. Set
-Collection <|-- Queue
-Iterator <-- Iterable
-Iterator <|.. ListIterator
-ListIterator <-- List
-
-@enduml
-```
 
 # 参考资料
 

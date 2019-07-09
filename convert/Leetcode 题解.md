@@ -54,7 +54,7 @@ Output: True
 Explanation: 1 * 1 + 2 * 2 = 5
 ```
 
-题目描述：判断一个数是否为两个数的平方和，例如 5 = 1<sup>2</sup> + 2<sup>2</sup>。
+题目描述：判断一个数是否为两个数的平方和。
 
 ```java
 public boolean judgeSquareSum(int c) {
@@ -81,7 +81,7 @@ public boolean judgeSquareSum(int c) {
 Given s = "leetcode", return "leotcede".
 ```
 
-使用双指针，指向待反转的两个元音字符，一个指针从头向尾遍历，一个指针从尾到头遍历。
+使用双指针指向待反转的两个元音字符，一个指针从头向尾遍历，一个指针从尾到头遍历。
 
 ```java
 private final static HashSet<Character> vowels = new HashSet<>(Arrays.asList('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'));
@@ -207,7 +207,7 @@ Output:
 "apple"
 ```
 
-题目描述：删除 s 中的一些字符，使得它构成字符串列表 d 中的一个字符串，找出能构成的最长字符串。如果有多个相同长度的结果，返回字典序的最大字符串。
+题目描述：删除 s 中的一些字符，使得它构成字符串列表 d 中的一个字符串，找出能构成的最长字符串。如果有多个相同长度的结果，返回字典序的最小字符串。
 
 ```java
 public String findLongestWord(String s, List<String> d) {
@@ -258,6 +258,8 @@ private boolean isValid(String s, String target) {
 
 [215. Kth Largest Element in an Array (Medium)](https://leetcode.com/problems/kth-largest-element-in-an-array/description/)
 
+题目描述：找到第 k 大的元素。
+
 **排序** ：时间复杂度 O(NlogN)，空间复杂度 O(1)
 
 ```java
@@ -274,7 +276,7 @@ public int findKthLargest(int[] nums, int k) {
     PriorityQueue<Integer> pq = new PriorityQueue<>(); // 小顶堆
     for (int val : nums) {
         pq.add(val);
-        if (pq.size() > k) // 维护堆的大小为 K
+        if (pq.size() > k)  // 维护堆的大小为 K
             pq.poll();
     }
     return pq.peek();
@@ -351,8 +353,10 @@ public List<Integer> topKFrequent(int[] nums, int k) {
     }
     List<Integer> topK = new ArrayList<>();
     for (int i = buckets.length - 1; i >= 0 && topK.size() < k; i--) {
-        if (buckets[i] != null) {
+        if (buckets[i].size() <= (k - topK.size())) {
             topK.addAll(buckets[i]);
+        } else {
+            topK.addAll(buckets[i].subList(0, k - topK.size()));
         }
     }
     return topK;
@@ -412,7 +416,7 @@ public String frequencySort(String s) {
 
 它其实是三向切分快速排序的一种变种，在三向切分快速排序中，每次切分都将数组分成三个区间：小于切分元素、等于切分元素、大于切分元素，而该算法是将数组分成三个区间：等于红色、等于白色、等于蓝色。
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/3b49dd67-2c40-4b81-8ad2-7bbb1fe2fcbd.png"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/3b49dd67-2c40-4b81-8ad2-7bbb1fe2fcbd.png"/> </div>
 
 **按颜色进行排序** 
 
@@ -506,7 +510,7 @@ Explanation: You don't need to remove any of the intervals since they're already
 
 题目描述：计算让一组区间不重叠所需要移除的区间个数。
 
-计算最多能组成的不重叠区间个数，然后用区间总个数减去不重叠区间的个数。
+先计算最多能组成的不重叠区间个数，然后用区间总个数减去不重叠区间的个数。
 
 在每次选择中，区间的结尾最为重要，选择的区间结尾越小，留给后面的区间的空间越大，那么后面能够选择的区间个数也就越大。
 
@@ -590,7 +594,7 @@ Output:
 
 题目描述：一个学生用两个分量 (h, k) 描述，h 表示身高，k 表示排在前面的有 k 个学生的身高比他高或者和他一样高。
 
-为了在每次插入操作时不影响后续的操作，身高较高的学生应该先做插入操作，否则身高较小的学生原先正确插入第 k 个位置可能会变成第 k+1 个位置。
+为了使插入操作不影响后续的操作，身高较高的学生应该先做插入操作，否则身高较小的学生原先正确插入的第 k 个位置可能会变成第 k+1 个位置。
 
 身高降序、k 值升序，然后按排好序的顺序插入队列的第 k 个位置中。
 
@@ -753,6 +757,52 @@ public int maxProfit(int[] prices) {
 }
 ```
 
+**子数组最大的和** 
+
+[53. Maximum Subarray (Easy)](https://leetcode.com/problems/maximum-subarray/description/)
+
+```html
+For example, given the array [-2,1,-3,4,-1,2,1,-5,4],
+the contiguous subarray [4,-1,2,1] has the largest sum = 6.
+```
+
+```java
+public int maxSubArray(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return 0;
+    }
+    int preSum = nums[0];
+    int maxSum = preSum;
+    for (int i = 1; i < nums.length; i++) {
+        preSum = preSum > 0 ? preSum + nums[i] : nums[i];
+        maxSum = Math.max(maxSum, preSum);
+    }
+    return maxSum;
+}
+```
+
+**买入和售出股票最大的收益** 
+
+[121. Best Time to Buy and Sell Stock (Easy)](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/)
+
+题目描述：只进行一次交易。
+
+只要记录前面的最小价格，将这个最小价格作为买入价格，然后将当前的价格作为售出价格，查看当前收益是不是最大收益。
+
+```java
+public int maxProfit(int[] prices) {
+    int n = prices.length;
+    if (n == 0) return 0;
+    int soFarMin = prices[0];
+    int max = 0;
+    for (int i = 1; i < n; i++) {
+        if (soFarMin > prices[i]) soFarMin = prices[i];
+        else max = Math.max(max, prices[i] - soFarMin);
+    }
+    return max;
+}
+```
+
 ## 二分查找
 
 **正常实现** 
@@ -776,7 +826,7 @@ public int binarySearch(int[] nums, int key) {
 
 **时间复杂度** 
 
-二分查找也称为折半查找，每次都能将查找区间减半，这种折半特性的算法时间复杂度都为 O(logN)。
+二分查找也称为折半查找，每次都能将查找区间减半，这种折半特性的算法时间复杂度为 O(logN)。
 
 **m 计算** 
 
@@ -912,7 +962,7 @@ public char nextGreatestLetter(char[] letters, char target) {
 [540. Single Element in a Sorted Array (Medium)](https://leetcode.com/problems/single-element-in-a-sorted-array/description/)
 
 ```html
-Input: [1,1,2,3,3,4,4,8,8]
+Input: [1, 1, 2, 3, 3, 4, 4, 8, 8]
 Output: 2
 ```
 
@@ -1081,13 +1131,13 @@ public List<Integer> diffWaysToCompute(String input) {
 
 ### BFS
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/4ff355cf-9a7f-4468-af43-e5b02038facc.jpg"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/4ff355cf-9a7f-4468-af43-e5b02038facc.jpg"/> </div>
 
-广度优先搜索的搜索过程有点像一层一层地进行遍历，每层遍历都以上一层遍历的结果作为起点，遍历一个距离能访问到的所有节点。需要注意的是，遍历过的节点不能再次被遍历。
+广度优先搜索一层一层地进行遍历，每层遍历都以上一层遍历的结果作为起点，遍历一个距离能访问到的所有节点。需要注意的是，遍历过的节点不能再次被遍历。
 
 第一层：
 
-- 0 -> {6,2,1,5};
+- 0 -> {6,2,1,5}
 
 第二层：
 
@@ -1101,7 +1151,7 @@ public List<Integer> diffWaysToCompute(String input) {
 - 4 -> {}
 - 3 -> {}
 
-可以看到，每一层遍历的节点都与根节点距离相同。设 d<sub>i</sub> 表示第 i 个节点与根节点的距离，推导出一个结论：对于先遍历的节点 i 与后遍历的节点 j，有 d<sub>i</sub><=d<sub>j</sub>。利用这个结论，可以求解最短路径等  **最优解**  问题：第一次遍历到目的节点，其所经过的路径为最短路径。应该注意的是，使用 BFS 只能求解无权图的最短路径。
+每一层遍历的节点都与根节点距离相同。设 d<sub>i</sub> 表示第 i 个节点与根节点的距离，推导出一个结论：对于先遍历的节点 i 与后遍历的节点 j，有 d<sub>i</sub> <= d<sub>j</sub>。利用这个结论，可以求解最短路径等  **最优解**  问题：第一次遍历到目的节点，其所经过的路径为最短路径。应该注意的是，使用 BFS 只能求解无权图的最短路径。
 
 在程序实现 BFS 时需要考虑以下问题：
 
@@ -1131,19 +1181,17 @@ public int minPathLength(int[][] grids, int tr, int tc) {
         pathLength++;
         while (size-- > 0) {
             Pair<Integer, Integer> cur = queue.poll();
+            int cr = cur.getKey(), cc = cur.getValue();
+            grids[cr][cc] = 0; // 标记
             for (int[] d : direction) {
-                int nr = cur.getKey() + d[0], nc = cur.getValue() + d[1];
-                Pair<Integer, Integer> next = new Pair<>(nr, nc);
-                if (next.getKey() < 0 || next.getValue() >= m
-                        || next.getKey() < 0 || next.getValue() >= n) {
-
+                int nr = cr + d[0], nc = cc + d[1];
+                if (nr < 0 || nr >= m || nc < 0 || nc >= n || grids[nr][nc] == 0) {
                     continue;
                 }
-                grids[next.getKey()][next.getValue()] = 0; // 标记
-                if (next.getKey() == tr && next.getValue() == tc) {
+                if (nr == tr && nc == tc) {
                     return pathLength;
                 }
-                queue.add(next);
+                queue.add(new Pair<>(nr, nc));
             }
         }
     }
@@ -1190,7 +1238,7 @@ public int numSquares(int n) {
                     continue;
                 }
                 marked[next] = true;
-                queue.add(cur - s);
+                queue.add(next);
             }
         }
     }
@@ -1241,7 +1289,7 @@ Output: 0
 Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
 ```
 
-找出一条从 beginWord 到 endWord 的最短路径，每次移动规定为改变一个字符，并且改变之后的字符串必须在 wordList 中。
+题目描述：找出一条从 beginWord 到 endWord 的最短路径，每次移动规定为改变一个字符，并且改变之后的字符串必须在 wordList 中。
 
 ```java
 public int ladderLength(String beginWord, String endWord, List<String> wordList) {
@@ -1312,11 +1360,11 @@ private int getShortestPath(List<Integer>[] graphic, int start, int end) {
 
 ### DFS
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/f7f7e3e5-7dd4-4173-9999-576b9e2ac0a2.png"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/f7f7e3e5-7dd4-4173-9999-576b9e2ac0a2.png"/> </div>
 
 广度优先搜索一层一层遍历，每一层得到的所有新节点，要用队列存储起来以备下一层遍历的时候再遍历。
 
-而深度优先搜索在得到一个新节点时立马对新节点进行遍历：从节点 0 出发开始遍历，得到到新节点 6 时，立马对新节点 6 进行遍历，得到新节点 4；如此反复以这种方式遍历新节点，直到没有新节点了，此时返回。返回到根节点 0 的情况是，继续对根节点 0 进行遍历，得到新节点 2，然后继续以上步骤。
+而深度优先搜索在得到一个新节点时立即对新节点进行遍历：从节点 0 出发开始遍历，得到到新节点 6 时，立马对新节点 6 进行遍历，得到新节点 4；如此反复以这种方式遍历新节点，直到没有新节点了，此时返回。返回到根节点 0 的情况是，继续对根节点 0 进行遍历，得到新节点 2，然后继续以上步骤。
 
 从一个节点出发，使用 DFS 对一个图进行遍历时，能够遍历到的节点都是从初始节点可达的，DFS 常用来求解这种  **可达性**  问题。
 
@@ -1430,12 +1478,14 @@ Input:
 [[1,1,0],
  [1,1,0],
  [0,0,1]]
+
 Output: 2
+
 Explanation:The 0th and 1st students are direct friends, so they are in a friend circle.
 The 2nd student himself is in a friend circle. So return 2.
 ```
 
-好友关系可以看成是一个无向图，例如第 0 个人与第 1 个人是好友，那么 M[0][1] 和 M[1][0] 的值都为 1。
+题目描述：好友关系可以看成是一个无向图，例如第 0 个人与第 1 个人是好友，那么 M[0][1] 和 M[1][0] 的值都为 1。
 
 ```java
 private int n;
@@ -1481,7 +1531,7 @@ X X X X
 X O X X
 ```
 
-使被 'X' 包围的 'O' 转换为 'X'。
+题目描述：使被 'X' 包围的 'O' 转换为 'X'。
 
 先填充最外侧，剩下的就是里侧了。
 
@@ -1621,7 +1671,7 @@ Backtracking（回溯）属于 DFS。
 
 [17. Letter Combinations of a Phone Number (Medium)](https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/)
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/a3f34241-bb80-4879-8ec9-dff2d81b514e.jpg"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/a3f34241-bb80-4879-8ec9-dff2d81b514e.jpg"/> </div>
 
 ```html
 Input:Digit string "23"
@@ -1629,7 +1679,6 @@ Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
 ```
 
 ```java
-
 private static final String[] KEYS = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
 
 public List<String> letterCombinations(String digits) {
@@ -2199,7 +2248,7 @@ private boolean isPalindrome(String s, int begin, int end) {
 
 [37. Sudoku Solver (Hard)](https://leetcode.com/problems/sudoku-solver/description/)
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/1ca52246-c443-48ae-b1f8-1cafc09ec75c.png"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/1ca52246-c443-48ae-b1f8-1cafc09ec75c.png"/> </div>
 
 ```java
 private boolean[][] rowsUsed = new boolean[9][10];
@@ -2219,12 +2268,7 @@ public void solveSudoku(char[][] board) {
             colsUsed[j][num] = true;
             cubesUsed[cubeNum(i, j)][num] = true;
         }
-
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-            backtracking(i, j);
-        }
-    }
+        backtracking(0, 0);
 }
 
 private boolean backtracking(int row, int col) {
@@ -2261,19 +2305,19 @@ private int cubeNum(int i, int j) {
 
 [51. N-Queens (Hard)](https://leetcode.com/problems/n-queens/description/)
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/1f080e53-4758-406c-bb5f-dbedf89b63ce.jpg"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/1f080e53-4758-406c-bb5f-dbedf89b63ce.jpg"/> </div>
 
 在 n\*n 的矩阵中摆放 n 个皇后，并且每个皇后不能在同一行，同一列，同一对角线上，求所有的 n 皇后的解。
 
 一行一行地摆放，在确定一行中的那个皇后应该摆在哪一列时，需要用三个标记数组来确定某一列是否合法，这三个标记数组分别为：列标记数组、45 度对角线标记数组和 135 度对角线标记数组。
 
-45 度对角线标记数组的维度为 2 \* n - 1，通过下图可以明确 (r, c) 的位置所在的数组下标为 r + c。
+45 度对角线标记数组的长度为 2 \* n - 1，通过下图可以明确 (r, c) 的位置所在的数组下标为 r + c。
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/85583359-1b45-45f2-9811-4f7bb9a64db7.jpg"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/85583359-1b45-45f2-9811-4f7bb9a64db7.jpg"/> </div>
 
-135 度对角线标记数组的维度也是 2 \* n - 1，(r, c) 的位置所在的数组下标为 n - 1 - (r - c)。
+135 度对角线标记数组的长度也是 2 \* n - 1，(r, c) 的位置所在的数组下标为 n - 1 - (r - c)。
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/9e80f75a-b12b-4344-80c8-1f9ccc2d5246.jpg"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/9e80f75a-b12b-4344-80c8-1f9ccc2d5246.jpg"/> </div>
 
 ```java
 private List<List<String>> solutions;
@@ -2338,7 +2382,9 @@ private void backtracking(int row) {
 
 第 i 个楼梯可以从第 i-1 和 i-2 个楼梯再走一步到达，走到第 i 个楼梯的方法数为走到第 i-1 和第 i-2 个楼梯的方法数之和。
 
-<div align="center">$dp[i]=dp[i-1]+dp[i-2]$</div> <br>
+$$
+dp[i]=dp[i-1]+dp[i-2]
+$$
 
 考虑到 dp[i] 只与 dp[i - 1] 和 dp[i - 2] 有关，因此可以只用两个变量来存储 dp[i - 1] 和 dp[i - 2]，使得原来的 O(N) 空间复杂度优化为 O(1) 复杂度。
 
@@ -2365,8 +2411,11 @@ public int climbStairs(int n) {
 
 定义 dp 数组用来存储最大的抢劫量，其中 dp[i] 表示抢到第 i 个住户时的最大抢劫量。
 
-由于不能抢劫邻近住户，因此如果抢劫了第 i 个住户那么只能抢劫 i - 2 或者 i - 3 的住户，所以
-dp[i] = max(dp[i-1], dp[i-2] + nums[i]) <br>
+由于不能抢劫邻近住户，如果抢劫了第 i -1 个住户，那么就不能再抢劫第 i 个住户，所以
+
+$$
+dp[i]=max(dp[i-2]+nums[i],dp[i-1])
+$$
 
 ```java
 public int rob(int[] nums) {
@@ -2378,7 +2427,6 @@ public int rob(int[] nums) {
     }
     return pre1;
 }
-
 ```
 
 **强盗在环形街区抢劫** 
@@ -2419,7 +2467,9 @@ private   int rob(int[] nums, int first, int last) {
 
 综上所述，错误装信数量方式数量为：
 
-<div align="center">$dp[i]=(i-1)*dp[i-2]+(i-1)*dp[i-1]$</div> <br>
+$$
+dp[i]=(i-1)*dp[i-2]+(i-1)*dp[i-1]
+$$
 
 **母牛生产** 
 
@@ -2429,7 +2479,9 @@ private   int rob(int[] nums, int first, int last) {
 
 第 i 年成熟的牛的数量为：
 
-<div align="center">$dp[i]=dp[i-1]+dp[i-3]$</div> <br>
+$$
+dp[i]=dp[i-1]+dp[i-3]
+$$
 
 ### 矩阵路径
 
@@ -2455,10 +2507,12 @@ public int minPathSum(int[][] grid) {
     int[] dp = new int[n];
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
-            if (i == 0) {
-                if (j>0) dp[j] = dp[j - 1];
+            if (j == 0) {
+                dp[j] = dp[j];        // 只能从上侧走到该位置
+            } else if (i == 0) {
+                dp[j] = dp[j - 1];    // 只能从左侧走到该位置
             } else {
-                if (j>0) dp[j] = Math.min(dp[j - 1], dp[j]);
+                dp[j] = Math.min(dp[j - 1], dp[j]);
             }
             dp[j] += grid[i][j];
         }
@@ -2473,7 +2527,7 @@ public int minPathSum(int[][] grid) {
 
 题目描述：统计从矩阵左上角到右下角的路径总数，每次只能向右或者向下移动。
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/7c98e1b6-c446-4cde-8513-5c11b9f52aea.jpg"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/7c98e1b6-c446-4cde-8513-5c11b9f52aea.jpg"/> </div>
 
 ```java
 public int uniquePaths(int m, int n) {
@@ -2488,7 +2542,7 @@ public int uniquePaths(int m, int n) {
 }
 ```
 
-也可以直接用数学公式求解，这是一个组合问题。机器人总共移动的次数 S=m+n-2，向下移动的次数 D=m-1，那么问题可以看成从 S 从取出 D 个位置的组合数量，这个问题的解为 C(S, D)。
+也可以直接用数学公式求解，这是一个组合问题。机器人总共移动的次数 S=m+n-2，向下移动的次数 D=m-1，那么问题可以看成从 S 中取出 D 个位置的组合数量，这个问题的解为 C(S, D)。
 
 ```java
 public int uniquePaths(int m, int n) {
@@ -2516,7 +2570,7 @@ sumRange(2, 5) -> -1
 sumRange(0, 5) -> -3
 ```
 
-求区间 i \~ j 的和，可以转换为 sum[j] - sum[i-1]，其中 sum[i] 为 0 \~ i 的和。
+求区间 i \~ j 的和，可以转换为 sum[j + 1] - sum[i]，其中 sum[i] 为 0 \~ i - 1 的和。
 
 ```java
 class NumArray {
@@ -2533,30 +2587,6 @@ class NumArray {
     public int sumRange(int i, int j) {
         return sums[j + 1] - sums[i];
     }
-}
-```
-
-**子数组最大的和** 
-
-[53. Maximum Subarray (Easy)](https://leetcode.com/problems/maximum-subarray/description/)
-
-```html
-For example, given the array [-2,1,-3,4,-1,2,1,-5,4],
-the contiguous subarray [4,-1,2,1] has the largest sum = 6.
-```
-
-```java
-public int maxSubArray(int[] nums) {
-    if (nums == null || nums.length == 0) {
-        return 0;
-    }
-    int preSum = nums[0];
-    int maxSum = preSum;
-    for (int i = 1; i < nums.length; i++) {
-        preSum = preSum > 0 ? preSum + nums[i] : nums[i];
-        maxSum = Math.max(maxSum, preSum);
-    }
-    return maxSum;
 }
 ```
 
@@ -2692,7 +2722,9 @@ public int numDecodings(String s) {
 
 因为在求 dp[n] 时可能无法找到一个满足条件的递增子序列，此时 {S<sub>n</sub>} 就构成了递增子序列，需要对前面的求解方程做修改，令 dp[n] 最小为 1，即：
 
-<div align="center">$dp[n]=max\{1,dp[i]+1|S_i<S_n\&\&i<n\}$</div> <br>
+$$
+dp[n]=max\{1,dp[i]+1|S_i<S_n\&\&i<n\}
+$$
 
 对于一个长度为 N 的序列，最长递增子序列并不一定会以 S<sub>N</sub> 为结尾，因此 dp[N] 不是序列的最长递增子序列的长度，需要遍历 dp 数组找出最大值才是所要的结果，max{ dp[i] | 1 <= i <= N} 即为所求。
 
@@ -2732,7 +2764,7 @@ return ret;
 定义一个 tails 数组，其中 tails[i] 存储长度为 i + 1 的最长递增子序列的最后一个元素。对于一个元素 x，
 
 - 如果它大于 tails 数组所有的值，那么把它添加到 tails 后面，表示最长递增子序列长度加 1；
-- 如果 tails[i-1] < x <= tails[i]，那么更新 tails[i-1] = x。
+- 如果 tails[i-1] < x <= tails[i]，那么更新 tails[i] = x。
 
 例如对于数组 [4,3,6,5]，有：
 
@@ -2857,7 +2889,9 @@ public int wiggleMaxLength(int[] nums) {
 
 综上，最长公共子序列的状态转移方程为：
 
-<div align="center">$dp[i][j]=\left\{\begin{array}{rcl}dp[i-1][j-1]&&{S1_i==S2_j}\\max(dp[i-1][j],dp[i][j-1])&&{S1_i<>S2_j}\end{array}\right.$</div> <br>
+$$
+dp[i][j]=\left\{\begin{array}{rcl}dp[i-1][j-1]&&{S1_i==S2_j}\\max(dp[i-1][j],dp[i][j-1])&&{S1_i<>S2_j}\end{array}\right.
+$$
 
 对于长度为 N 的序列 S<sub>1</sub> 和长度为 M 的序列 S<sub>2</sub>，dp[N][M] 就是序列 S<sub>1</sub> 和序列 S<sub>2</sub> 的最长公共子序列长度。
 
@@ -2895,7 +2929,9 @@ public int lengthOfLCS(int[] nums1, int[] nums2) {
 
 第 i 件物品可添加也可以不添加，取决于哪种情况下最大价值更大。因此，0-1 背包的状态转移方程为：
 
-<div align="center">$dp[i][j]=max(dp[i-1][j],dp[i-1][j-w]+v)$</div> <br>
+$$
+dp[i][j]=max(dp[i-1][j],dp[i-1][j-w]+v)
+$$
 
 ```java
 public int knapsack(int W, int N, int[] weights, int[] values) {
@@ -2918,7 +2954,9 @@ public int knapsack(int W, int N, int[] weights, int[] values) {
 
 在程序实现时可以对 0-1 背包做优化。观察状态转移方程可以知道，前 i 件物品的状态仅与前 i-1 件物品的状态有关，因此可以将 dp 定义为一维数组，其中 dp[j] 既可以表示 dp[i-1][j] 也可以表示 dp[i][j]。此时，
 
-<div align="center">$dp[j]=max(dp[j],dp[j-w]+v)$</div> <br>
+$$
+dp[j]=max(dp[j],dp[j-w]+v)
+$$
 
 因为 dp[j-w] 表示 dp[i-1][j-w]，因此不能先求 dp[i][j-w]，以防将 dp[i-1][j-w] 覆盖。也就是说要先计算 dp[i][j] 再计算 dp[i][j-w]，在程序实现时需要按倒序来循环求解。
 
@@ -2980,7 +3018,6 @@ public boolean canPartition(int[] nums) {
     int W = sum / 2;
     boolean[] dp = new boolean[W + 1];
     dp[0] = true;
-    Arrays.sort(nums);
     for (int num : nums) {                 // 0-1 背包一个物品只能用一次
         for (int i = W; i >= num; i--) {   // 从后往前，先计算 dp[i] 再计算 dp[i-num]
             dp[i] = dp[i] || dp[i - num];
@@ -3037,7 +3074,6 @@ public int findTargetSumWays(int[] nums, int S) {
     int W = (sum + S) / 2;
     int[] dp = new int[W + 1];
     dp[0] = 1;
-    Arrays.sort(nums);
     for (int num : nums) {
         for (int i = W; i >= num; i--) {
             dp[i] = dp[i] + dp[i - num];
@@ -3229,7 +3265,7 @@ public int combinationSum4(int[] nums, int target) {
 
 题目描述：交易之后需要有一天的冷却时间。
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/a3da4342-078b-43e2-b748-7e71bec50dc4.png"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/a3da4342-078b-43e2-b748-7e71bec50dc4.png"/> </div>
 
 ```java
 public int maxProfit(int[] prices) {
@@ -3270,7 +3306,7 @@ The total profit is ((8 - 1) - 2) + ((9 - 4) - 2) = 8.
 
 题目描述：每交易一次，都要支付一定的费用。
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/61942711-45a0-4e11-bbc9-434e31436f33.png"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/61942711-45a0-4e11-bbc9-434e31436f33.png"/> </div>
 
 ```java
 public int maxProfit(int[] prices, int fee) {
@@ -3291,27 +3327,6 @@ public int maxProfit(int[] prices, int fee) {
 }
 ```
 
-**买入和售出股票最大的收益** 
-
-[121. Best Time to Buy and Sell Stock (Easy)](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/)
-
-题目描述：只进行一次交易。
-
-只要记录前面的最小价格，将这个最小价格作为买入价格，然后将当前的价格作为售出价格，查看当前收益是不是最大收益。
-
-```java
-public int maxProfit(int[] prices) {
-    int n = prices.length;
-    if (n == 0) return 0;
-    int soFarMin = prices[0];
-    int max = 0;
-    for (int i = 1; i < n; i++) {
-        if (soFarMin > prices[i]) soFarMin = prices[i];
-        else max = Math.max(max, prices[i] - soFarMin);
-    }
-    return max;
-}
-```
 
 **只能进行两次的股票交易** 
 
@@ -5247,7 +5262,7 @@ private void inOrder(TreeNode node, List<Integer> nums) {
 
 ### Trie
 
-<div align="center"> <img src="https://raw.githubusercontent.com/CyC2018/CS-Notes/master/pics/5c638d59-d4ae-4ba4-ad44-80bdc30f38dd.jpg"/> </div>
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/5c638d59-d4ae-4ba4-ad44-80bdc30f38dd.jpg"/> </div>
 
 Trie，又称前缀树或字典树，用于判断字符串是否存在或者是否具有某种字符串前缀。
 
@@ -5647,7 +5662,7 @@ Output: 5
 Explanation: The longest harmonious subsequence is [3,2,2,2,3].
 ```
 
-和谐序列中最大数和最小数只差正好为 1，应该注意的是序列的元素不一定是数组的连续元素。
+和谐序列中最大数和最小数之差正好为 1，应该注意的是序列的元素不一定是数组的连续元素。
 
 ```java
 public int findLHS(int[] nums) {
